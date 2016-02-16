@@ -389,7 +389,213 @@ You can call below function to directly open any contact tab dynamically :
 
 ```
  $applozic.fn.applozic('loadTab', 'put-userId-here'); 
+```              
+
+
+
+### Lightweight - Plugin              
+
+
+
+
+
+**Welcome to the Applozic-Web-Plugin**
+
+# Applozic light weight messaging jQuery plugin.
+
+Integrate messaging plugin into your web application.
+
+Add Applozic messaging plugin into your web application for real time messaging communication 
+via  Applozic functions. 
+
+**Step 1**: Register at **https://www.applozic.com/** to get the application key.
+
+**Step 2**: For the standard user interface, add the following Applozic messaging plugin script file before **`</head>`** into your web page:                 
+
+
+
+
+
+```          
+<script type="text/javascript" src="https://www.applozic.com/resources/lib/js/apz-notify.min.js"></script>      
+<script type="text/javascript" src="https://www.applozic.com/resources/sidebox/js/app/apz-client-1.0.js"></script>        
+```               
+
+
+**Step 3**: Initialize Plugin - 
+Create **APPLOZIC** instance by passing options            
+
+
+
+```      
+ var applozic = new APPLOZIC({'baseUrl': "https://apps.applozic.com",
+ 'userId': 'put-userId-here',
+ 'appId': 'put-applicationKey-here',
+'onInit': initResponse // callback function called on initialization
+});        
+```              
+
+
+
+*Note- Create **APPLOZIC** instance only after page load probably inside  **$(document).ready()**. 
+function before **`</body>`** 
+After  plugin initialization if **onInit** callback function response is  *`success` you can send and receive messages by calling  Applozic functions directly as explained in Step 5 and Step 6 
+
+
+Step 4:  Subscribe to Applozic events and implement your own logic:
+Following are the events with example:                    
+
+
+
+
+
+```        
+applozic.events = {onConnect: function () {
+console.log('connected successfully');
+}, onConnectFailed: function () {
+console.log('connection failed');
+}, onMessageDelivered: function (obj) {
+console.log('onMessageDelivered: ' + obj);
+}, onMessageRead: function (obj) {
+console.log('onMessageRead: '  + obj);
+}, onMessageReceived: function (obj) {
+console.log('onMessageReceived: ' + obj);
+}, onMessageSentUpdate: function (obj) {
+console.log('onMessageSentUpdate: ' + obj);
+}, onUserConnect: function (obj) {
+console.log('onUserConnect: ' + obj);
+}, onUserDisconnect: function (obj) {
+console.log('onUserDisconnect: ' + obj);
+},
+};              
+  ```               
+  
+  
+  
+  
+  **Events description**:
+
+1) ** onConnect ** : triggered when user subscribed successfully. 
+2) **onConnectFailed** :  triggered when user failed to subscribe.
+3)  **onMessageDelivered** : triggered when message is delivered. Response contains message key.
+ Response object- {'messageKey': 'delivered-message-key'}.
+4) **onMessageRead** : triggered when delivered message is read on other end. Response contains message key.
+ Response object - {'messageKey': 'delivered-message-key'}.
+5) **onMessageReceived** : triggered when new message received. Response contains message
+Response object -  {'message': message}  // Message json format given in Step 6.
+6) **onMessageSentUpdate** : triggered when message sent successfully to server. Response contains      messageKey.
+ Response  object- {'messageKey': 'sent-message-key'}.
+7) **onUserConnect **: triggered when some other user comes online. Response contains user Id.
+ Response object - {'userId': 'connected-user-Id'}
+8) **onUserDisconnect** : triggered when some other user goes offline. Response contains user Id.
+Response object - {'userId': 'disconnected-user-id', 'lastSeenAtTime' : 'time in millsec'}
+
+
+
+**Step 5** : Send Message -                  
+
+
+
+
+```               
+applozic.sendMessage(message, {'callback': sendMessageCallbackFunction});
+```        
+
+
+
+**message**  include -         
+
+
+
+
+```     
+message = { 'to': 'put-userid-here',  // receiver userid
+'message': 'message-text' //  message text
+};     
+```       
+
+
+
+**sendMessageCallbackFunction** response -                   
+
+
+
+```    
+response = { 'status' : 'success', // or 'error'
+'response' :  // oblect 
+{  'messageKey': 'message-identifier'
+'timeStamp': 'message created timestamp'
+}                                 
+}        
+```         
+
+
+
+Step 6: **Get Message List** -         
+
+
+
+
 ```
+applozic.messageList(params, {'callback': messageListCallbackFunction});
+```        
+
+
+
+ **params**  include-           
+ 
+ 
+ 
+ 
+ 
+ ```
+ params = { 'id': 'put-userid-here'};  // other userid with whom conversations fetch
+ ```            
+ 
+ 
+ 
+ **messageListCallbackFunction** response -                
+ 
+ 
+ 
+ 
+ 
+ ```
+ response = { 'status' : 'success', // or 'error'
+ 'messages' :[]  // Array of messages  (message format given below)     
+ }
+```         
+
+
+
+**message** json format-           
+
+
+
+```
+message = {
+key: "message-identifier",
+from: "sender userid",         
+message: "message-text",
+type: 'inbox or outbox',
+status: "message status",  // outbox  (sent, delivered or read)
+// inbox (read, unread)
+timeStamp: 'message created timestamp',
+to: 'receiver userid'
+ }
+```              
+
+
+
+
+
+
+
+ 
+
+
+
+
 
 
 
